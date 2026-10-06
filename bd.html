@@ -4849,11 +4849,11 @@ Scripting.evalJavaScript(Story.get('鱼').text);
 
 if (document.location.href.toLowerCase().indexOf("http") === 0) {
     setup.Path = "";
-    $(document.head).append('<link rel="icon" type="image/png" href="/A/favicon-96x96.png" sizes="96x96" />');
-    $(document.head).append('<link rel="icon" type="image/svg+xml" href="/A/favicon.svg" />');
-    $(document.head).append('<link rel="shortcut icon" href="/A/favicon.ico" />');
-    $(document.head).append('<link rel="apple-touch-icon" sizes="180x180" href="/A/apple-touch-icon.png" />');
-    $(document.head).append('<link rel="manifest" href="/A/site.webmanifest" />');
+    $(document.head).append('<link rel="icon" type="image/png" href="/A/favicon/favicon-96x96.png" sizes="96x96" />');
+    $(document.head).append('<link rel="icon" type="image/svg+xml" href="/A/favicon/favicon.svg" />');
+    $(document.head).append('<link rel="shortcut icon" href="/A/favicon/favicon.ico" />');
+    $(document.head).append('<link rel="apple-touch-icon" sizes="180x180" href="/A/favicon/apple-touch-icon.png" />');
+    $(document.head).append('<link rel="manifest" href="/A/favicon/site.webmanifest" />');
 } else {
     setup.Path = "";
     $(document.head).append('<link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />');
@@ -4863,7 +4863,6 @@ if (document.location.href.toLowerCase().indexOf("http") === 0) {
     $(document.head).append('<link rel="manifest" href="favicon/site.webmanifest" />');
 }
 
-$(document.head).append('<meta name="apple-mobile-web-app-title" content="MyWebSite" />');
 
 // 颜色取色器绑定
 // 设置主界面背景颜色
