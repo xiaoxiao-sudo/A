@@ -8643,35 +8643,67 @@ setup.triggerGlitch = function(duration) {
         img.src = url;
     }
 
-    function preloadAll (urls, cb) {
+    function preloadAll(urls, cb) {
         var loaded = 0;
-        var toBeLoaded = urls.length;
-        if (toBeLoaded === 0) {
-            throw new Error("No URLs to preload!");
+        var total = urls.length;
+        if (total === 0) {
+            cb();
+            return;
         }
-        urls.forEach( function (url) {
-            preloadImage( url, function () {
+        urls.forEach(function (url) {
+            preloadImage(url, function () {
                 loaded++;
-                if (loaded === toBeLoaded) {
+                if (loaded >= total) {
                     cb();
                 }
             });
         });
     }
 
-    function isInit () {
+    function isInit() {
         return State.length <= 0;
     }
 
+    var STORAGE_KEY = "preloaded_images_v1";
 
-    function preload () {
+    function getCachedUrls() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveCachedUrls(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {
+            /* 存储满就忽略，不阻断游戏 */
+        }
+    }
+
+    function preload() {
         var list = [].slice.call(arguments).flat(Infinity);
-        var id = isInit() ? LoadScreen.lock() : false;
-        preloadAll( list, function () {
-            if (id) {
-                LoadScreen.unlock(id);
-            }
+        list = list.filter(function (url) {
+            return typeof url === 'string' && url.length > 0;
         });
+
+        var cached = getCachedUrls();
+        var toLoad = list.filter(function (url) {
+            return cached.indexOf(url) === -1;
+        });
+
+        var id = isInit() ? LoadScreen.lock() : false;
+        if (toLoad.length === 0) {
+            if (id) LoadScreen.unlock(id);
+            return id;
+        }
+        preloadAll(toLoad, function () {
+            saveCachedUrls(cached.concat(toLoad));
+            if (id) LoadScreen.unlock(id);
+        });
+
         return id;
     }
 
@@ -8679,17 +8711,24 @@ setup.triggerGlitch = function(duration) {
     setup.preload.force = false;
 
     /* <<preload imageUrls...>> */
+
     Macro.add('preload', {
-        handler : function () {
+        handler: function () {
             if (!isInit() && !setup.preload.force) {
-                return this.error("Attempting to preload images outside of `StoryInit` or similar can cause performance issues. Set `setup.preload.force` to `true` if you want to do it anyway.");
+                return this.error(
+                    "Attempting to preload images outside of 'StoryInit' or similar " +
+                    "can cause performance issues. Set `setup.preload.force = true` " +
+                    "if you want to do it anyway."
+                );
             }
-            preload(this.args.flat(Infinity).filter( function (url) {
-                return typeof url === 'string';
-            }));
+            preload(
+                this.args.flat(Infinity).filter(function (url) {
+                    return typeof url === 'string';
+                })
+            );
         }
     });
-}());</script><tw-tag name="dissolve-transition" color="none"></tw-tag><tw-tag name="w" color="green"></tw-tag><tw-tag name="tear-transition" color="green"></tw-tag><tw-tag name="transition" color="red"></tw-tag><tw-tag name="nbar" color="yellow"></tw-tag><tw-tag name="noreturn" color="green"></tw-tag><tw-tag name="nobe" color="yellow"></tw-tag><tw-passagedata pid="1" name="0" tags="" position="250,475" size="100,100">你抬头望去，天花板上长长的吊灯发出的光线刺入你的眼底，你下意识抬起了手遮挡着，将头偏了过去。你家的下人（…︖）恭恭敬敬的站成两排，而后方的壁炉正燃烧着热源。家里看上去并不像什么需要你去捕鱼来补贴家用的情况。
+})();</script><tw-tag name="dissolve-transition" color="none"></tw-tag><tw-tag name="w" color="green"></tw-tag><tw-tag name="tear-transition" color="green"></tw-tag><tw-tag name="transition" color="red"></tw-tag><tw-tag name="nbar" color="yellow"></tw-tag><tw-tag name="noreturn" color="green"></tw-tag><tw-tag name="nobe" color="yellow"></tw-tag><tw-passagedata pid="1" name="0" tags="" position="250,475" size="100,100">你抬头望去，天花板上长长的吊灯发出的光线刺入你的眼底，你下意识抬起了手遮挡着，将头偏了过去。你家的下人（…︖）恭恭敬敬的站成两排，而后方的壁炉正燃烧着热源。家里看上去并不像什么需要你去捕鱼来补贴家用的情况。
 
 你的母亲终于打断了还在絮絮叨叨的父亲，他似乎也知道说的过多会起反作用，顺从的闭上了嘴。母亲摸了摸你的头，叮嘱你以后就算是要去玩闹多少也得带着下人。
 你点了头，垂下眼眸。
@@ -13375,7 +13414,7 @@ var x = centerX + (Math.random() * maxOffset * 2 - maxOffset);
 &lt;&lt;set $lone=false&gt;&gt;/*累计数词的周目判断*/
 
 &lt;&lt;script&gt;&gt;Config.history.controls=false;&lt;&lt;/script&gt;&gt;//关闭侧边栏后退按钮
-
+&lt;&lt;picture&gt;&gt;
 
 &lt;&lt;script&gt;&gt;
 // 定义成就
@@ -25436,7 +25475,7 @@ border-top: 1px solid Black;
 *加了个预加载图片宏&lt;br&gt;
 *给累计数次加了新的判断。给开头增加了一个彩蛋的判断&lt;br&gt;
 *我把二周目也做完了&lt;br&gt;
-*预加载图片加载太久了我删了又加。。犹豫中&lt;br&gt;
+*预加载图片加载太久了我删了又加。。犹豫中。（2026年10月12日20:54:54加了&lt;br&gt;
 
 
 &lt;br&gt;&lt;br&gt;
